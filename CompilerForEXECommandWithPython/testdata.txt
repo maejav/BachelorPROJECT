@@ -1,0 +1,13 @@
+n db 4
+a db 5
+b db 6
+m db 7
+l1: add a,b
+l2: jmp l1
+l3: out a
+l5: mov a,b
+l7: inp b
+l8: sub a,b
+l9: mul n,m
+l10: div a,b
+l11: cmp a,b
