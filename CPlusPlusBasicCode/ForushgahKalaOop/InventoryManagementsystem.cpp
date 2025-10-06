@@ -40,12 +40,12 @@ void insertProduct() {
     std::cout << "Enter ID, Name, Creator, Price, Date:\n";
     std::cin >> p.id >> p.name >> p.creator >> p.price >> p.date.value;
 
-    std::ofstream file("kala.txt", std::ios::app);
+    std::ofstream file("Product.txt", std::ios::app);
     file << p.id << " " << p.name << " " << p.creator << " " << p.price << " " << p.date.value << "\n";
 }
 
 void showProducts() {
-    auto products = readProducts("kala.txt");
+    auto products = readProducts("Product.txt");
     std::cout << "Product List:\n";
     for (const auto& p : products) {
         std::cout << p.id << "\t" << p.name << "\t" << p.creator << "\t" << p.price << "\t" << p.date.value << "\n";
@@ -53,7 +53,7 @@ void showProducts() {
 }
 
 void searchProduct() {
-    auto products = readProducts("kala.txt");
+    auto products = readProducts("Product.txt");
     int choice;
     std::cout << "Search by: 1. Name  2. Creator\n";
     std::cin >> choice;
@@ -71,7 +71,7 @@ void searchProduct() {
 }
 
 void updateProduct() {
-    auto products = readProducts("kala.txt");
+    auto products = readProducts("Product.txt");
     std::string targetId;
     std::cout << "Enter ID to update:\n";
     std::cin >> targetId;
@@ -83,11 +83,11 @@ void updateProduct() {
             break;
         }
     }
-    writeProducts("kala.txt", products);
+    writeProducts("Product.txt", products);
 }
 
 void deleteProduct() {
-    auto products = readProducts("kala.txt");
+    auto products = readProducts("Product.txt");
     std::string targetName;
     int mode;
     std::cout << "Enter name to delete:\n";
@@ -106,50 +106,7 @@ void deleteProduct() {
             updated.push_back(p);
         }
     }
-    writeProducts("kala.txt", updated);
+    writeProducts("Product.txt", updated);
 }
 
-void restoreProducts() {
-    auto recycled = readProducts("recycle.txt");
-    std::cout << "Recycled Products:\n";
-    for (const auto& p : recycled) {
-        std::cout << p.id << "\t" << p.name << "\t" << p.creator << "\t" << p.price << "\t" << p.date.value << "\n";
-    }
-
-    char confirm;
-    std::cout << "Restore all? (y/n): ";
-    std::cin >> confirm;
-    if (confirm == 'y') {
-        auto products = readProducts("kala.txt");
-        products.insert(products.end(), recycled.begin(), recycled.end());
-        writeProducts("kala.txt", products);
-        std::ofstream clear("recycle.txt");
-    }
-}
-
-void sortProducts() {
-    auto products = readProducts("kala.txt");
-    std::sort(products.begin(), products.end(), [](const Product& a, const Product& b) {
-        return std::stof(a.price) < std::stof(b.price);
-    });
-    writeProducts("kala.txt", products);
-    std::cout << "Products sorted by price.\n";
-}
-
-int main() {
-    int choice;
-    do {
-        std::cout << "\nMenu:\n1. Insert\n2. Show\n3. Search\n4. Update\n5. Delete\n6. Restore\n7. Sort\n8. Exit\n";
-        std::cin >> choice;
-        switch (choice) {
-            case 1: insertProduct(); break;
-            case 2: showProducts(); break;
-            case 3: searchProduct(); break;
-            case 4: updateProduct(); break;
-            case 5: deleteProduct(); break;
-            case 6: restoreProducts(); break;
-            case 7: sortProducts(); break;
-        }
-    } while (choice != 8);
-    return 0;
-}
+void restore
