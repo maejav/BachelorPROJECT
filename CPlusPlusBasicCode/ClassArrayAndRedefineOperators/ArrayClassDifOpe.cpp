@@ -1,74 +1,94 @@
 #include <iostream>
-#include<conio.h>
 #include <cstdlib>
 using namespace std;
-void error (const char *);
-class array{
-      private: double *a;  int n;
-              public: array(){a=0;n=0;//allocatememory();  //cout<<"constroctor!\n";}
-              }
-                     array(int m){a=0;n=0;a=new double; (*a)=m;    //cout<<"constroctor!\n";  }
-                     }
-                     void allocatememory(void){  cout<<"enter terms:\n";  cin>>n;  if(n>0)a=new double[n];  else error("n<0::::::"); if (!a)error("memory error!"); }
-                     void input (void){allocatememory();
-                          cout<<"enter numbers:\n";
-                     for(int i=0;i<n;i++){
-                             cout<<"a["<<i<<"]:";
-                             cin>>a[i];
-                             }
-                             }
-                             void print (void){
-                                  if (n>1)
-                                  for (int i=0;i<n;i++){
-                                      cout<<*(a+i)<<"\n";
-                                      
-                                      }
-                                      
-                                    else
-                                               cout <<*a<<"\n";
-                                               }
-                                               
-                                      /*array &operator=(const array &b){
-                                            if(n>0){delete []a;a=0;n=0;}
-                                            a=new double [n=b.n];
-                                            for (int i=0;i<n;i++){
-                                                a[i]=b.a[i];
-                                                }
-                                                return *this;
-                                                }
-*/                                              
-                                             friend  array & operator=(array &a,const array &b);
-                                      ~array(){delete []a;a=0;n=0;//cout<<"destroctor!\n";}
-                                      }
-                                    
-                                      };end of class
-                                      array &operator=(array &a,const array &b){
-                                            for (int i=0;i<b.n,i++){
-                                                a[i]=b[i];
-                                                }
-                                                return *this;
-                                                }
-                                            
-int main(){
-    array m1,m2(2),m3(3),m4;
-    m4=4;
+
+void error(const char *msg) {
+    cout << msg << "\n";
+    exit(0);
+}
+
+class Array {
+private:
+    double *a;
+    int n;
+
+public:
+    // Default constructor
+    Array() : a(nullptr), n(0) {}
+
+    // Constructor with one value
+    Array(double value) : n(1) {
+        a = new double[1];
+        a[0] = value;
+    }
+
+    // Copy constructor
+    Array(const Array &other) {
+        n = other.n;
+        a = new double[n];
+        for (int i = 0; i < n; ++i)
+            a[i] = other.a[i];
+    }
+
+    // Assignment operator
+    Array &operator=(const Array &other) {
+        if (this != &other) {
+            delete[] a;
+            n = other.n;
+            a = new double[n];
+            for (int i = 0; i < n; ++i)
+                a[i] = other.a[i];
+        }
+        return *this;
+    }
+
+    // Input method
+    void input() {
+        cout << "Enter number of elements: ";
+        cin >> n;
+        if (n <= 0)
+            error("Invalid size!");
+        a = new double[n];
+        cout << "Enter " << n << " numbers:\n";
+        for (int i = 0; i < n; ++i) {
+            cout << "a[" << i << "]: ";
+            cin >> a[i];
+        }
+    }
+
+    // Print method
+    void print() const {
+        if (n == 0) {
+            cout << "(empty array)\n";
+            return;
+        }
+        for (int i = 0; i < n; ++i)
+            cout << a[i] << "\n";
+    }
+
+    // Destructor
+    ~Array() {
+        delete[] a;
+    }
+};
+
+int main() {
+    Array m1, m2(2), m3(3), m4;
+    m4 = Array(4);  // Assign a single value using constructor
+
     m1.input();
-    //m2.input();
-    //m3.input();
-    cout<<"m1:\n";
+
+    cout << "m1:\n";
     m1.print();
-    cout<<"m2:\n";
+
+    cout << "m2:\n";
     m2.print();
-    cout<<"m3:\n";
+
+    cout << "m3:\n";
     m3.print();
-    cout<<"m4:\n";
+
+    cout << "m4:\n";
     m4.print();
-    getch();
+
     return 0;
 }
-void error(const char *msg){
-     cout<<msg<<"\n";
-     getch();
-     exit (0);
-     }
-                        
