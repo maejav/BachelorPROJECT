@@ -1,242 +1,146 @@
-#include <cstdlib>
 #include <iostream>
-#include <Windows.h>
+#include <cstdlib>
+#include <ctime>
 #include <conio.h>
+#include <Windows.h>
 using namespace std;
-int p,meno,f,k,m,m1,m2,r,bomb;
-int a[15][15];
-char st[15][15];
 
-void insert(void)
-{
-	for (int i=0;i<m;i++)
-	{
-		for (int j=0;j<m;j++)
+const int MAX_SIZE = 15;
+int grid[MAX_SIZE][MAX_SIZE];     // Actual game grid: 0 = bomb, 1 = safe, 2 = flagged
+char display[MAX_SIZE][MAX_SIZE]; // Player-visible grid
+int gridSize, minBombs, maxBombs, bombCount, revealedCells;
 
-		{
-			a[i][j]=1;
-		}//end of for
-	}//end of for
-}//end of insert
-void random (void)
-{
-	r=rand()%(m1-m2)+m2;
-	bomb=r;
-	while(r)
-	{
-			a[rand()%m][rand()%m]=0;
-		r--;
-	}//end of while
-}//end of random
-void showrandom (void)
-{
-	for(int i=0;i<m;i++)
-	{
-		for(int j=0;j<m;j++)
-		{
-				cout<<a[i][j];
-		}//end of for
-		cout<<"\n";
-	}//end of for
-}//end of showrandom
-void star (void)
-{
-	for(int i=0;i<m;i++)
-	{
-		for(int j=0;j<m;j++)
-		{
-				st[i][j]='*';
-		}//end of for
-	}//end of for
-}//end of star
-void showstar (void)
-{
-	for(int i=0;i<m;i++)
-	{
-		for(int j=0;j<m;j++)
-		{
-				cout<<st[i][j];
-		}//end of for
-		cout<<"\n";
-	}//end of for
-}//end of showstar
-void insertbomb (int &c)
-{int s=0;
+void initializeGrid() {
+    for (int i = 0; i < gridSize; i++)
+        for (int j = 0; j < gridSize; j++)
+            grid[i][j] = 1;
+}
 
-                                                     int i=f;
-                                                     int j=k; 
-    
-             
-	       if(i==0&&j==0)
-	       { s=a[f][k+1]+a[f+1][k]+a[f+1][k+1];
-                          c=3-s;}
-                          if(i==0&&j==m-1)
-                          { s=a[f][k-1]+a[f+1][k]+a[f+1][k-1];
-                                          c=3-s;}
-                                          if(i==m-1&&j==0)
-                                          {s=a[f][k+1]+a[f-1][k]+a[f-1][k+1];
-                                                          c=3-s;}
-                                             if(i==m-1&&j==m-1)
-                                               {s=a[f][k-1]+a[f-1][k-1]+a[f-1][k];
-                                                     c=3-s;}                
-                                                 if(i>0&&i<m-1&&j>0&&j<m-1)
-                                                 { s=a[f][k-1]+a[f][k+1]+a[f-1][k-1]+a[f-1][k]+a[f-1][k+1]+a[f+1][k-1]+a[f+1][k]+a[f+1][k+1];
-                                                    c=8-s;}
-                                                 if(i=0&&j>0&&j<m-1)
-                                                 {s=a[f][k-1]+a[f][k+1]+a[f+1][k-1]+a[f+1][k]+a[f+1][k+1];
-                                                    c=5-s;}
-                                                  if(j=0&&i>0&&i<m-1)
-                                                  {s=a[f-1][k]+a[f-1][k+1]+a[f][k+1]+a[f+1][k]+a[f+1][k+1];
-                                                     c=5-s;}
-                                                  if(i=m-1&&i>0&&j<m-1)
-                                                  {s=a[f][k-1]+a[f][k+1]+a[f-1][k-1]+a[f-1][k]+a[f-1][k+1];
-                                                     c=5-s;}
-                                                  if(j=m-1&&i>0&&i<m-1)
-                                                  {s=a[f-1][k]+a[f-1][k-1]+a[f][k-1]+a[f+1][k]+a[f+1][k-1];
-                                                      c=5-s;}
-	        
-}//end of insertbomb
+void placeBombs() {
+    int bombsToPlace = rand() % (maxBombs - minBombs + 1) + minBombs;
+    bombCount = bombsToPlace;
 
-int main(int argc, char *argv[])
-{ 
-    char ch='y';
-    while(ch=='y')
-    {
-    int q=0;
-     cout<<"sath bazy ra entekhab konid."<<"\n";
-	cout<<"sadeh="<<1<<"\n"<<"motovaset="<<2<<"\n"<<"sakht="<<3<<"\n";
-	cin>>p;
-	system("cls");
-	if(p==1)
-	{
-			m=5;
-			m1=10;
-			m2=1;
-	}
-	if(p==2)
-	{
-		m=10;
-		m1=20;
-		m2=10;
-	}
-	if(p==3)
-	{
-		m=15;
-		m1=30;
-		m2=20;
-	}
-	insert();
-	random();
-	star();
-	showstar();
-	cout<<"yek meno ra entekhab konid."<<"\n";
-		while(1)
-		{
-			cout<<"menoye aval="<<1<<"\n"<<"menoye dovom="<<2<<"\n";
-			cin>>meno;
-			if(meno==1)
-			{
-				cout<<"satr va sotun ra entekhab konid"<<"\n";
-				cin>>f>>k;
-				if(p==1){
-				if (f>=5||k>=5)
-				{
-                               cout<<"adad namotabar!"<<"\n";
-				                continue;
-                    }
-                    }
-                    if(p==2){
-                             
-				if (f>=10||k>=10)
-				{
-                               cout<<"adad namotabar!"<<"\n";
-				                continue;
-                    }
-                    }
-                    if(p==3){
-                             
-				if (f>=15||k>=15)
-				{
-                               cout<<"adad namotabar!"<<"\n";
-				                continue;
-                    }
-                    }
-				if(a[f][k]==0)
-				{
-					system("cls");
-					cout<<"bazy ra bakhtid!"<<"\n";
-					showrandom();
-					break;
-				}//end of if
-				else if(a[f][k]==1)
-				{
-					insertbomb(q);
-					st[f][k]=q+'0';
-					system("cls");
-					showstar();
-				}//end of else
-			}//end of if
-			if(meno==2)
-			{cout<<"tedad bomb="<<bomb<<"\n";
+    while (bombsToPlace > 0) {
+        int x = rand() % gridSize;
+        int y = rand() % gridSize;
+        if (grid[x][y] == 1) {
+            grid[x][y] = 0;
+            bombsToPlace--;
+        }
+    }
+}
 
-				cout<<"satr va sotun ra entekhab konid"<<"\n";
-				cin>>f>>k;
-				
-				if(p==1){
-				if (f>=5||k>=5)
-				{
-                               cout<<"adad namotabar!"<<"\n";
-				                continue;
-                    }
-                    }
-                    if(p==2){
-                             
-				if (f>=10||k>=10)
-				{
-                               cout<<"adad namotabar!"<<"\n";
-				                continue;
-                    }
-                    }
-                    if(p==3){
-                             
-				if (f>=15||k>=15)
-				{
-                               cout<<"adad namotabar!"<<"\n";
-				                continue;
-                    }
-                    }
-				if (a[f][k]==1)
-				{
-					system("cls");
-					cout<<"bazy ra bakhtid!"<<"\n";
-					showrandom();
-					break;
-				}
-				else if(a[f][k]==0)
-				{
-					bomb--;
-					cout<<"tedad bomb="<<bomb<<"\n";
-					getch();
-					a[f][k]=2;
-					st[f][k]=' ';
-					system("cls");
-					showstar();
-					if(bomb==0)
-						break;
-				}//end of else if
-			}//end of if
-		}//end of while
-		if(bomb==0)
-			{cout<<"shoma barandeh shodid!"<<"\n";}
-        cout<<"agar az ebteda aghaz mikonid y ra vared konid"<<"\n";
-        cin>>ch;
-        }//end of while
+void initializeDisplay() {
+    for (int i = 0; i < gridSize; i++)
+        for (int j = 0; j < gridSize; j++)
+            display[i][j] = '*';
+}
 
+void showDisplayGrid() {
+    for (int i = 0; i < gridSize; i++) {
+        for (int j = 0; j < gridSize; j++)
+            cout << display[i][j] << " ";
+        cout << "\n";
+    }
+}
 
+void showActualGrid() {
+    for (int i = 0; i < gridSize; i++) {
+        for (int j = 0; j < gridSize; j++)
+            cout << grid[i][j] << " ";
+        cout << "\n";
+    }
+}
 
+int countAdjacentBombs(int row, int col) {
+    int count = 0;
+    for (int i = row - 1; i <= row + 1; i++) {
+        for (int j = col - 1; j <= col + 1; j++) {
+            if (i >= 0 && i < gridSize && j >= 0 && j < gridSize && !(i == row && j == col)) {
+                if (grid[i][j] == 0)
+                    count++;
+            }
+        }
+    }
+    return count;
+}
 
+int main() {
+    srand(time(0));
+    char playAgain = 'y';
 
-    system("PAUSE");
-    return EXIT_SUCCESS;
+    while (playAgain == 'y') {
+        int difficulty;
+        cout << "Select difficulty level:\n";
+        cout << "1 = Easy\n2 = Medium\n3 = Hard\n";
+        cin >> difficulty;
+        system("cls");
 
+        if (difficulty == 1) { gridSize = 5; maxBombs = 10; minBombs = 1; }
+        else if (difficulty == 2) { gridSize = 10; maxBombs = 20; minBombs = 10; }
+        else if (difficulty == 3) { gridSize = 15; maxBombs = 30; minBombs = 20; }
+
+        initializeGrid();
+        placeBombs();
+        initializeDisplay();
+        revealedCells = 0;
+        int totalSafeCells = gridSize * gridSize - bombCount;
+
+        while (true) {
+            showDisplayGrid();
+            cout << "\nChoose an action:\n1 = Reveal cell\n2 = Flag bomb\n";
+            int action, row, col;
+            cin >> action;
+
+            cout << "Enter row and column (0 to " << gridSize - 1 << "): ";
+            cin >> row >> col;
+
+            if (row < 0 || row >= gridSize || col < 0 || col >= gridSize) {
+                cout << "Invalid coordinates!\n";
+                continue;
+            }
+
+            if (action == 1) {
+                if (grid[row][col] == 0) {
+                    system("cls");
+                    cout << "You hit a bomb! Game over.\n";
+                    showActualGrid();
+                    break;
+                } else {
+                    int adjacent = countAdjacentBombs(row, col);
+                    display[row][col] = adjacent + '0';
+                    revealedCells++;
+                    system("cls");
+                    if (revealedCells == totalSafeCells) {
+                        cout << "Congratulations! You revealed all safe cells.\n";
+                        showDisplayGrid();
+                        break;
+                    }
+                }
+            } else if (action == 2) {
+                if (grid[row][col] == 1) {
+                    system("cls");
+                    cout << "Incorrect flag! That was a safe cell. Game over.\n";
+                    showActualGrid();
+                    break;
+                } else if (grid[row][col] == 0) {
+                    bombCount--;
+                    grid[row][col] = 2;
+                    display[row][col] = 'F';
+                    system("cls");
+                    if (bombCount == 0) {
+                        cout << "You flagged all bombs correctly! You win!\n";
+                        showDisplayGrid();
+                        break;
+                    }
+                }
+            }
+        }
+
+        cout << "Play again? Enter 'y' to restart or any other key to exit: ";
+        cin >> playAgain;
+        system("cls");
+    }
+
+    return 0;
 }
