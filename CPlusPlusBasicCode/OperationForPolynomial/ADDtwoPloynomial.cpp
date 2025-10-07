@@ -1,18 +1,18 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
+using namespace std;
 
 class Polynomial {
 private:
-    std::vector<double> coefficients;
-    std::vector<int> exponents;
+    vector<double> coefficients;
+    vector<int> exponents;
 
 public:
-    // Input polynomial terms
     void input() {
         int n;
-        std::cout << "Enter number of terms: ";
-        std::cin >> n;
+        cout << "Enter number of terms: ";
+        cin >> n;
 
         coefficients.clear();
         exponents.clear();
@@ -20,45 +20,54 @@ public:
         for (int i = 0; i < n; ++i) {
             double coeff;
             int exp;
-            std::cout << "Enter coefficient[" << i << "]: ";
-            std::cin >> coeff;
-            std::cout << "Enter exponent[" << i << "]: ";
-            std::cin >> exp;
+            cout << "Enter coefficient[" << i << "]: ";
+            cin >> coeff;
+            cout << "Enter exponent[" << i << "]: ";
+            cin >> exp;
 
             addTerm(exp, coeff);
         }
     }
 
-    // Display polynomial
+    void addTerm() {
+        double coeff;
+        int exp;
+        cout << "Enter new coefficient: ";
+        cin >> coeff;
+        cout << "Enter new exponent: ";
+        cin >> exp;
+
+        addTerm(exp, coeff);
+    }
+
     void display() const {
-        std::cout << "Polynomial: ";
+        cout << "Polynomial: ";
         bool first = true;
         for (size_t i = 0; i < coefficients.size(); ++i) {
             if (coefficients[i] == 0) continue;
 
             if (!first && coefficients[i] > 0)
-                std::cout << "+";
+                cout << "+";
 
-            std::cout << coefficients[i];
+            cout << coefficients[i];
 
             if (exponents[i] != 0) {
-                std::cout << "x";
+                cout << "x";
                 if (exponents[i] != 1)
-                    std::cout << "^" << exponents[i];
+                    cout << "^" << exponents[i];
             }
 
             first = false;
         }
-        std::cout << "\n";
+        cout << "\n";
     }
 
-    // Sort terms by exponent descending
     void sortDescending() {
-        std::vector<std::pair<int, double>> terms;
+        vector<pair<int, double>> terms;
         for (size_t i = 0; i < coefficients.size(); ++i)
             terms.emplace_back(exponents[i], coefficients[i]);
 
-        std::sort(terms.begin(), terms.end(), [](auto& a, auto& b) {
+        sort(terms.begin(), terms.end(), [](auto& a, auto& b) {
             return a.first > b.first;
         });
 
@@ -70,7 +79,22 @@ public:
         }
     }
 
-    // Add two polynomials
+    void searchByExponent() const {
+        int exp;
+        cout << "Enter exponent to search: ";
+        cin >> exp;
+
+        bool found = false;
+        for (size_t i = 0; i < exponents.size(); ++i) {
+            if (exponents[i] == exp) {
+                cout << "Coefficient for x^" << exp << " is " << coefficients[i] << "\n";
+                found = true;
+            }
+        }
+        if (!found)
+            cout << "No term with exponent " << exp << " found.\n";
+    }
+
     Polynomial add(const Polynomial& other) const {
         Polynomial result;
         for (size_t i = 0; i < coefficients.size(); ++i)
@@ -82,7 +106,6 @@ public:
         return result;
     }
 
-    // Multiply two polynomials
     Polynomial multiply(const Polynomial& other) const {
         Polynomial result;
         for (size_t i = 0; i < coefficients.size(); ++i) {
@@ -95,7 +118,6 @@ public:
         return result;
     }
 
-    // Differentiate the polynomial
     Polynomial differentiate() const {
         Polynomial result;
         for (size_t i = 0; i < coefficients.size(); ++i) {
@@ -107,7 +129,6 @@ public:
     }
 
 private:
-    // Add or merge a term
     void addTerm(int exp, double coeff) {
         for (size_t i = 0; i < exponents.size(); ++i) {
             if (exponents[i] == exp) {
@@ -121,33 +142,61 @@ private:
 };
 
 int main() {
-    Polynomial p1, p2;
+    Polynomial poly1, poly2;
+    Polynomial result;
+    int choice;
 
-    std::cout << "Enter first polynomial:\n";
-    p1.input();
-    p1.sortDescending();
-    p1.display();
+    while (true) {
+        cout << "\nPolynomial Manager:\n";
+        cout << "1. Input first polynomial\n";
+        cout << "2. Input second polynomial\n";
+        cout << "3. Add a term to first polynomial\n";
+        cout << "4. Display first polynomial\n";
+        cout << "5. Display second polynomial\n";
+        cout << "6. Sort first polynomial\n";
+        cout << "7. Search exponent in first polynomial\n";
+        cout << "8. Add polynomials\n";
+        cout << "9. Multiply polynomials\n";
+        cout << "10. Differentiate first polynomial\n";
+        cout << "11. Differentiate second polynomial\n";
+        cout << "12. Exit\n";
+        cout << "Enter your choice: ";
+        cin >> choice;
 
-    std::cout << "\nEnter second polynomial:\n";
-    p2.input();
-    p2.sortDescending();
-    p2.display();
-
-    Polynomial sum = p1.add(p2);
-    sum.sortDescending();
-    std::cout << "\nSum of polynomials:\n";
-    sum.display();
-
-    Polynomial product = p1.multiply(p2);
-    product.sortDescending();
-    std::cout << "\nProduct of polynomials:\n";
-    product.display();
-
-    Polynomial diff1 = p1.differentiate();
-    diff1.sortDescending();
-    std::cout << "\nDerivative of first polynomial:\n";
-    diff1.display();
-
-    Polynomial diff2 = p2.differentiate();
-    diff2.sortDescending();
-    std::cout << "\nDerivative of second polynomial:\n";
+        switch (choice) {
+            case 1: poly1.input(); break;
+            case 2: poly2.input(); break;
+            case 3: poly1.addTerm(); break;
+            case 4: poly1.display(); break;
+            case 5: poly2.display(); break;
+            case 6: poly1.sortDescending(); cout << "Sorted.\n"; break;
+            case 7: poly1.searchByExponent(); break;
+            case 8:
+                result = poly1.add(poly2);
+                result.sortDescending();
+                cout << "Sum:\n";
+                result.display();
+                break;
+            case 9:
+                result = poly1.multiply(poly2);
+                result.sortDescending();
+                cout << "Product:\n";
+                result.display();
+                break;
+            case 10:
+                result = poly1.differentiate();
+                result.sortDescending();
+                cout << "Derivative of first polynomial:\n";
+                result.display();
+                break;
+            case 11:
+                result = poly2.differentiate();
+                result.sortDescending();
+                cout << "Derivative of second polynomial:\n";
+                result.display();
+                break;
+            case 12: return 0;
+            default: cout << "Invalid choice. Try again.\n";
+        }
+    }
+}
