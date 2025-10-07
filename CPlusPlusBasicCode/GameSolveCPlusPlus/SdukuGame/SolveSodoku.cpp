@@ -1,237 +1,159 @@
 #include <iostream>
-#include <conio.h>
+#include <cstdlib>
 using namespace std;
 
-
-
-int     temp[9][9];
-int array1[9][9]={{6,8,3,9,4,1,2,0,0},{0,2,5,7,0,3,4,6,0},{0,0,9,0,6,0,8,1,3},{7,6,0,0,3,0,0,8,5},{9,0,1,6,0,8,7,0,2},{3,5,8,1,0,7,0,0,4},{0,9,0,5,1,0,0,4,6},{5,1,4,3,7,0,9,2,8},{2,0,0,0,9,4,5,7,0}};
-class node{
-	int sod[9][9];
-	int num_sod[9];
-	int index;
-	node *next;
-public:
-	node (){
-        for(int i=0;i<9;i++)
-			num_sod[i]=i+1;
-		index=0;
-		next=NULL;
-
-	}//end of node 
-    friend class soduko;
+int initialBoard[9][9] = {
+    {6,8,3,9,4,1,2,0,0},
+    {0,2,5,7,0,3,4,6,0},
+    {0,0,9,0,6,0,8,1,3},
+    {7,6,0,0,3,0,0,8,5},
+    {9,0,1,6,0,8,7,0,2},
+    {3,5,8,1,0,7,0,0,4},
+    {0,9,0,5,1,0,0,4,6},
+    {5,1,4,3,7,0,9,2,8},
+    {2,0,0,0,9,4,5,7,0}
 };
 
+class SudokuNode {
+public:
+    int board[9][9];
+    int candidates[9];
+    int candidateIndex;
+    SudokuNode* next;
 
+    SudokuNode() {
+        for (int i = 0; i < 9; i++)
+            candidates[i] = i + 1;
+        candidateIndex = 0;
+        next = nullptr;
+    }
 
+    friend class SudokuSolver;
+};
 
-class soduko{
+class SudokuSolver {
 private:
-	node *root;
-	node *ptr;
+    SudokuNode* root;
+    SudokuNode* current;
+
 public:
-	soduko(){
-	root=new node;
-	ptr=root;
-	for(int i=0;i<9;i++){
-		for(int j=0;j<9;j++)
-		{
-		root->sod[i][j]=array1[i][j];
+    SudokuSolver() {
+        root = new SudokuNode();
+        current = root;
+        for (int i = 0; i < 9; i++)
+            for (int j = 0; j < 9; j++)
+                root->board[i][j] = initialBoard[i][j];
+    }
 
-		}//end of for
+    void displayBoard() {
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 9; j++)
+                cout << current->board[i][j] << " ";
+            cout << "\n";
+        }
+        cout << "\n";
+    }
 
-	}//end of for aval
-	root->next=NULL;
-	
-}//end of tabee
+    int countEmptyCells() {
+        int count = 0;
+        for (int i = 0; i < 9; i++)
+            for (int j = 0; j < 9; j++)
+                if (current->board[i][j] == 0)
+                    count++;
+        return count;
+    }
 
+    void findNextEmpty(int& row, int& col) {
+        for (int i = 0; i < 9; i++)
+            for (int j = 0; j < 9; j++)
+                if (current->board[i][j] == 0) {
+                    row = i;
+                    col = j;
+                    return;
+                }
+    }
 
-int check_row_col_sq (int row,int col,int value){
-	for (int k=0;k<9;k++){
-		if(k!=col)
-		if(ptr->sod[row][k]==value )
-			return 1;
-	}//end of for
-	
+    bool isValid(int row, int col, int value) {
+        for (int i = 0; i < 9; i++) {
+            if (i != col && current->board[row][i] == value) return false;
+            if (i != row && current->board[i][col] == value) return false;
+        }
 
+        int startRow = (row / 3) * 3;
+        int startCol = (col / 3) * 3;
+        for (int i = startRow; i < startRow + 3; i++)
+            for (int j = startCol; j < startCol + 3; j++)
+                if ((i != row || j != col) && current->board[i][j] == value)
+                    return false;
 
-	for(int k=0;k<9;k++){
-		if(k!=row)
-		if(ptr->sod[k][col]==value)
-			return 1;
-	}//end of for
+        return true;
+    }
 
+    void backtrack() {
+        if (current == root) {
+            cout << "No solution found.\n";
+            exit(0);
+        }
 
-	for (int k=(row/3)*3; k<(row/3)*3+3; k++)
-    for (int m=(col/3)*3; m<(col/3)*3+3; m++){
+        SudokuNode* toDelete = current;
+        SudokuNode* prev = root;
+        while (prev->next != current)
+            prev = prev->next;
 
-		if((k!=row)||(m!=col)){
+        current = prev;
+        delete toDelete;
+        current->next = nullptr;
 
-			if(ptr->sod[k][m]==value)
-				return 1;
-		}
+        current->candidates[current->candidateIndex] = 0;
 
-	}
+        bool hasCandidates = false;
+        for (int i = 0; i < 9; i++)
+            if (current->candidates[i] != 0)
+                hasCandidates = true;
 
-	return 0;
+        if (!hasCandidates)
+            backtrack();
+    }
 
-}//end of taee
+    void solve() {
+        displayBoard();
 
-int  check_num(void){
-	int num_hole=0;
+        while (countEmptyCells() > 0) {
+            int row, col;
+            findNextEmpty(row, col);
 
-	for(int i=0;i<9;i++)
-		for(int j=0;j<9;j++){
+            current->next = new SudokuNode();
+            for (int i = 0; i < 9; i++)
+                for (int j = 0; j < 9; j++)
+                    current->next->board[i][j] = current->board[i][j];
 
-			if(ptr->sod[i][j]==0)
-				num_hole++;
+            int value = 0;
+            for (int i = 0; i < 9; i++) {
+                if (current->candidates[i] != 0) {
+                    value = current->candidates[i];
+                    current->next->board[row][col] = value;
+                    current->candidateIndex = i;
+                    break;
+                }
+            }
 
+            current = current->next;
+            displayBoard();
 
-		}//end of for
+            if (isValid(row, col, value)) {
+                continue;
+            } else {
+                backtrack();
+            }
+        }
 
-		return num_hole;
-
-}//end of check
-
-void check (int &row,int &col){
-	for(int i=0;i<9;i++)
-		for(int j=0;j<9;j++)
-			if(ptr->sod[i][j]==0){
-				row=i;
-				col=j;
-//
-				return ;
-
-
-			}
-
-
-
-}//end of check
-
-void backtrack(void){
-	
-				if(ptr==root){
-					cout<<"this is not continued!\n";
-					int t;
-					cin>>t;
-					exit(0);
-				}
-
-			//	cout<<"hazzzzzzzzzzzzzzzzf\n";
-	
-					node *garbage=ptr;
-					node *ptr1;
-					for( ptr1=root;ptr1->next!=ptr;ptr1=ptr1->next);
-					ptr=ptr1;
-					delete []garbage;
-					ptr->next=NULL;
-
-
-
-					
-	
-					int sef=0;
-					ptr->num_sod[ptr->index]=0;
-					show();
-					for(int i=0;i<9;i++)
-						if(ptr->num_sod[i]!=0){
-							sef=1;
-							break;
-						}
-						if(sef==0){
-
-							backtrack();
-						}
-						return ;
-
-}//end of backtrack
-void start(void){
-	show();
-	 
-	ptr=root;
-	int row,col;
-	while(check_num()!=0){
-
-       check(row,col);
-	   ///   
-
-
-
-
-	   ////ptr
-	 ////copy
-	ptr->next=new node;
-	for(int i=0;i<9;i++)
-		for(int j=0;j<9;j++)
-		{
-			ptr->next->sod[i][j]=ptr->sod[i][j];
-
-
-		}//end of for
-	
-		// ptr=ptr->next;
-		int value;
-		for(int i=0;i<9;i++)
-			if(ptr->num_sod[i]!=0){
-		ptr->next->sod[row][col]=ptr->num_sod[i];
-		value=ptr->num_sod[i];
-		ptr->index=i;
-		break;
-			}
-			ptr=ptr->next;
-			show();
-	   
-		
-		
-		
-		//////end of copy
-			if(check_row_col_sq(row,col,value)==0){
-				cout<<"continue\n";
-                 continue;
-
-		}
-			else{
-				cout<<"back track \n";
-				backtrack();
-
-
-			}
-
-		//	cout<<"aaaaaaaaaaaaaaaaaaa\n";
-	}//end of while
-	show();
-
-}//end of start
-void show (void){
-	for(int i=0;i<9;i++){
-		for(int j=0;j<9;j++)
-			cout<<ptr->sod[i][j]<<"   ";
-
-		cout<<"\n";
-
-	
-	}
-	//cout<<"dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd\n";
-}
-
-
-
+        cout << "Sudoku solved successfully!\n";
+        displayBoard();
+    }
 };
-int main(){
 
-
-soduko s;
-s.start();
-
-	
-
-cout<<"this is sucsessful\n";
-int t;
-cin>>t;
-
-
-
-
-	return 0;
-}//end of main
+int main() {
+    SudokuSolver solver;
+    solver.solve();
+    return 0;
+}
