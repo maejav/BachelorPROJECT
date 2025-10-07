@@ -8,6 +8,7 @@ private:
     std::vector<int> exponents;
 
 public:
+    // Input polynomial terms
     void input() {
         int n;
         std::cout << "Enter number of terms: ";
@@ -24,17 +25,18 @@ public:
             std::cout << "Enter exponent[" << i << "]: ";
             std::cin >> exp;
 
-            coefficients.push_back(coeff);
-            exponents.push_back(exp);
+            addTerm(exp, coeff);
         }
     }
 
+    // Display polynomial
     void display() const {
         std::cout << "Polynomial: ";
+        bool first = true;
         for (size_t i = 0; i < coefficients.size(); ++i) {
             if (coefficients[i] == 0) continue;
 
-            if (i > 0 && coefficients[i] > 0)
+            if (!first && coefficients[i] > 0)
                 std::cout << "+";
 
             std::cout << coefficients[i];
@@ -44,10 +46,13 @@ public:
                 if (exponents[i] != 1)
                     std::cout << "^" << exponents[i];
             }
+
+            first = false;
         }
         std::cout << "\n";
     }
 
+    // Sort terms by exponent descending
     void sortDescending() {
         std::vector<std::pair<int, double>> terms;
         for (size_t i = 0; i < coefficients.size(); ++i)
@@ -65,6 +70,7 @@ public:
         }
     }
 
+    // Add two polynomials
     Polynomial add(const Polynomial& other) const {
         Polynomial result;
         for (size_t i = 0; i < coefficients.size(); ++i)
@@ -76,6 +82,7 @@ public:
         return result;
     }
 
+    // Multiply two polynomials
     Polynomial multiply(const Polynomial& other) const {
         Polynomial result;
         for (size_t i = 0; i < coefficients.size(); ++i) {
@@ -88,18 +95,19 @@ public:
         return result;
     }
 
+    // Differentiate the polynomial
     Polynomial differentiate() const {
         Polynomial result;
         for (size_t i = 0; i < coefficients.size(); ++i) {
             if (exponents[i] != 0) {
-                result.coefficients.push_back(coefficients[i] * exponents[i]);
-                result.exponents.push_back(exponents[i] - 1);
+                result.addTerm(exponents[i] - 1, coefficients[i] * exponents[i]);
             }
         }
         return result;
     }
 
 private:
+    // Add or merge a term
     void addTerm(int exp, double coeff) {
         for (size_t i = 0; i < exponents.size(); ++i) {
             if (exponents[i] == exp) {
@@ -143,7 +151,3 @@ int main() {
     Polynomial diff2 = p2.differentiate();
     diff2.sortDescending();
     std::cout << "\nDerivative of second polynomial:\n";
-    diff2.display();
-
-    return 0;
-}
