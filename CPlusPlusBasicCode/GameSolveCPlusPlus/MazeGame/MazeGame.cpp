@@ -1,263 +1,160 @@
 #include <iostream>
 #include <fstream>
-#include <cstdlib>
-#include<conio.h>
-#include <Windows.h>
+#include <vector>
+#include <string>
+
 using namespace std;
-int maz[50][50];//////?????global
-int mark[50][50];
-int t=0;
-struct address {
-	int a,b;
+
+struct Position {
+    int row, col;
 };
-class stack {
-	int max;
-	address *ad;
-	int top;
+
+class Stack {
+    vector<Position> data;
+
 public:
-	stack(){
-		ad=NULL;
-		top=-1;}
-	stack(int max1){
-		ad=new address[max=max1];
-		top=-1;
-			}
-	~stack(){
-		delete []ad;
-	}
-	int get_x(void){
-		int x;
-		x=ad[top-1].a;
-		return x;
-	}
-	int get_y(void){
-		int y;
-		y=ad[top-1].b;
-		return y;
-	}
-	void add (int m,int n){
-		if(top==max-1){
-			cout<<"stack is full!\n";
-			getch();
-		exit(0);
-		}
-		else
-		{
-		++top;
-		//cout<<"push kon  ";
-		ad[top].a=m;
-		//cout<<"m="<<m<<"  ";
-		ad[top].b=n;
-		//cout<<"n="<<n<<"\n";
-		}
-		
-	}
-	void del(void){
-		if (top!=-1){
-			t++;
-			--top;
-		//cout<<t<<"="<<"pak kon\n";
-		}
-		else
-		{
-	    cout<<"stack is empty!\n";
-		getch();
-		exit(0);
-		}
-		
-	}
-	void print(void){
-		cout<<"size:"<<max<<"\n";
-		for(int i=0;i<=top;i++){
-			cout<<i+1<<"="<<"i:"<<ad[i].a<<" "<<"j:"<<ad[i].b<<"\n";
-		}
-	}//end of print 
-	
-	stack & operator=(const stack & t){
-	
-	ad=new address [max=t.max];
-	top=t.top;
-	for(int i=0;i<=top;i++){
-		ad[i].a=t.ad[i].a;
-		ad[i].b=t.ad[i].b;
-	}
-	
-	return *this;
-	}/*
-  */
-	stack(const stack &t){
-		ad=new address [max=t.max];
-		top=t.top;
-		for(int i=0;i<=top;i++){
-		ad[i].a=t.ad[i].a;
-		ad[i].b=t.ad[i].b;
-		}
-	}
+    void push(int row, int col) {
+        data.push_back({row, col});
+    }
 
-	friend stack maze(int sa,int so);
-};//end of stack;;;
-stack maze(int sa,int so){
-	stack s1(sa*so);
-	//cout<<so*sa<<"\n";
-	int i=1,j=1;//hatman in khane sefr  ast
-	if (maz[i][j]!=0){
-		cout<<"error!!\n";
-		getch();
-		exit(0);
-	}
-	s1.add(i,j);
-	mark[i][j]=1;
-	int test1=1,test2=1;
-	while(i!=sa-2 || j!=so-2)////bastegi darad che chiz ra be onvan arguman baray an befrestim///??????????check shavad
-	{
-		
-		 if(maz[i+1][j+1]==0 && (i+1!=test1||j+1!=test2)&&mark[i+1][j+1]!=1){
-			test1=i;
-			test2=j;
-			i=i+1;
-			j=j+1;
-			s1.add(i,j);
-			mark[i][j]=1;
-		}
-		 
-		else if(maz[i][j+1]==0 && (i!=test1||j+1!=test2)&&mark[i][j+1]!=1){
-			test1=i;
-			test2=j;
-			j=j+1;
-			s1.add(i,j);
-			mark[i][j]=1;
-		}
-		
-		else if (maz[i+1][j]==0 && (i+1!=test1||j!=test2)&&mark[i+1][j]!=1){
-			test1=i;
-			test2=j;
-			i=i+1;
-			s1.add(i,j);
-			mark[i][j]=1;
-		}
-		
-		else if(maz[i+1][j-1]==0 && (i+1!=test1||j-1!=test2)&&mark[i+1][j-1]!=1){
-			test1=i;
-			test2=j;
-			i=i+1;
-			j=j-1;
-			s1.add(i,j);
-			mark[i][j]=1;
-		}
-		
-		else if(maz[i-1][j+1]==0 && (i-1!=test1||j+1!=test2)&&mark[i-1][j+1]!=1){
-			test1=i;
-			test2=j;
-			i=i-1;
-			j=j+1;
-			s1.add(i,j);
-			mark[i][j]=1;
-		}
-		else if(maz[i-1][j]==0 && (i-1!=test1||j!=test2)&&mark[i-1][j]!=1){
-			test1=i;
-			test2=j;
-			i=i-1;
-			s1.add(i,j);
-			mark[i][j]=1;
-		}
-		else if(maz[i][j-1]==0 && (i!=test1||j-1!=test2)&&mark[i][j-1]!=1){
-			test1=i;
-			test2=j;
-			j=j-1;
-			s1.add(i,j);
-			mark[i][j]=1;
-		}
-		else if (maz[i-1][j-1]==0 && (i-1!=test1||j-1!=test2)&&mark[i-1][j-1]!=1){
-			test1=i;
-			test2=j;
-			i=i-1;
-			j=j-1;
-			s1.add(i,j);
-			mark[i][j]=1;
-		}
-		else 
-		{
-			
-			maz[i][j]=1;
-			s1.del();
-			i=test1;
-			j=test2;
-			test1=s1.get_x();
-			test2=s1.get_y();
-		}
-		
+    void pop() {
+        if (!data.empty()) {
+            data.pop_back();
+        }
+    }
 
-	}
-	return s1;
-}//end of tabe/////////////////
-void  insert (int &m,int &n){	
-	
+    Position top() const {
+        if (!data.empty()) {
+            return data.back();
+        }
+        return {-1, -1}; // Invalid position
+    }
 
+    bool empty() const {
+        return data.empty();
+    }
 
-	fstream f1("t.txt");
-	if(!f1){
-	cout<<"FILE IS NOT HEAR!!!!!\n";
-	getch();
-	exit(0);
-	}
+    void print() const {
+        cout << "\nPath through the maze:\n";
+        for (size_t i = 0; i < data.size(); ++i) {
+            cout << i + 1 << ": (" << data[i].row << ", " << data[i].col << ")\n";
+        }
+    }
+};
 
-	char st[50]={};
-	int line_counter=0;
-	int i=1;
-	int l=1;
-	while(!f1.eof()){
-		f1.getline(st,49);
-		l=1;
-		for(int m=0;st[m]!=NULL;m++){
-			if(st[m]!=' ')
-			{
-				maz[i][l]=st[m]-48;
-				l++;
-			}
-		}
+vector<vector<int>> maze;
+vector<vector<bool>> visited;
 
-		i++;
-		line_counter++;
-	}
-	cout<<"row="<<line_counter<<"\n";
-	m=line_counter+2;
-	int j,k=0;
-	for( j=0;st[j]!=NULL;j++)
-		if (st[j]!=' ')
-			k++;
-	cout<<"column="<<k<<"\n";
-	n=k+2;
+bool isValid(int row, int col, int rows, int cols) {
+    return row >= 0 && row < rows &&
+           col >= 0 && col < cols &&
+           maze[row][col] == 0 &&
+           !visited[row][col];
+}
 
-	f1.close();
-	for(int z=0;z<n;z++) {
-		maz[0][z]=1;
-	    maz[m-1][z]=1;
-	}
-	for(int z=0;z<m;z++){
-		maz[z][0]=1;
-		maz[z][n-1]=1;
-	}
-	//system("cls");
-	for(int z=0;z<m;z++){
-	for(int y=0;y<n;y++){
-		cout<<maz[z][y]<<" ";
-	}
-	cout<<"\n";
-	}
+bool solveMaze(int startRow, int startCol, int endRow, int endCol, Stack& path) {
+    int rows = maze.size();
+    int cols = maze[0].size();
+    path.push(startRow, startCol);
+    visited[startRow][startCol] = true;
 
-}//end of tabe*/
+    while (!path.empty()) {
+        Position current = path.top();
 
+        if (current.row == endRow && current.col == endCol) {
+            return true;
+        }
 
-int main(){
-	int m=0,n=0;
-	insert(m,n);
-	cout<<"row of matris:"<<m<<"column of matris:"<<n;
-	cout<<"\n";
-	stack s1;
-    s1=maze(m,n);
-	getch();
-	s1.print();
-	cout<<"END OF PROGRAM!!!!\n";
-    getch();
-	return 0;
+        bool moved = false;
+        vector<Position> directions = {
+            {1, 0}, {0, 1}, {-1, 0}, {0, -1},
+            {1, 1}, {-1, -1}, {1, -1}, {-1, 1}
+        };
+
+        for (const auto& dir : directions) {
+            int newRow = current.row + dir.row;
+            int newCol = current.col + dir.col;
+
+            if (isValid(newRow, newCol, rows, cols)) {
+                path.push(newRow, newCol);
+                visited[newRow][newCol] = true;
+                moved = true;
+                break;
+            }
+        }
+
+        if (!moved) {
+            path.pop();
+        }
+    }
+
+    return false;
+}
+
+bool loadMaze(const string& filename, int& rows, int& cols) {
+    ifstream file(filename);
+    if (!file) {
+        cerr << "Error: Could not open file " << filename << "\n";
+        return false;
+    }
+
+    vector<string> lines;
+    string line;
+    while (getline(file, line)) {
+        lines.push_back(line);
+    }
+
+    rows = lines.size() + 2;
+    cols = 0;
+    for (char ch : lines[0]) {
+        if (ch != ' ') ++cols;
+    }
+    cols += 2;
+
+    maze.assign(rows, vector<int>(cols, 1));
+    visited.assign(rows, vector<bool>(cols, false));
+
+    for (size_t i = 0; i < lines.size(); ++i) {
+        int colIndex = 1;
+        for (char ch : lines[i]) {
+            if (ch != ' ') {
+                maze[i + 1][colIndex++] = ch - '0';
+            }
+        }
+    }
+
+    cout << "\nMaze loaded (" << rows << "x" << cols << "):\n";
+    for (const auto& row : maze) {
+        for (int cell : row) {
+            cout << cell << " ";
+        }
+        cout << "\n";
+    }
+
+    return true;
+}
+
+int main() {
+    int rows, cols;
+    if (!loadMaze("t.txt", rows, cols)) {
+        return 1;
+    }
+
+    Stack path;
+    int startRow = 1, startCol = 1;
+    int endRow = rows - 2, endCol = cols - 2;
+
+    if (maze[startRow][startCol] != 0 || maze[endRow][endCol] != 0) {
+        cerr << "Error: Start or end position is blocked.\n";
+        return 1;
+    }
+
+    if (solveMaze(startRow, startCol, endRow, endCol, path)) {
+        path.print();
+    } else {
+        cout << "No path found through the maze.\n";
+    }
+
+    cout << "\nProgram finished.\n";
+    return 0;
 }
