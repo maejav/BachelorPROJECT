@@ -1,89 +1,53 @@
-#include <cstdlib>
 #include <iostream>
-#include<conio.h>
+#include <vector>
+#include <iomanip>
+
 using namespace std;
 
-int main(int argc, char *argv[])
-{
-    int t=1;
-    int a[50][50]={};
-    int n;
-    cout<<"n?\n";
-    cin>>n;
-    
-                   for(int s=0;s<=n;s++)
-                   {
-                           for(int t=0;t<=n;t++)
-                           {
-                                   a[s][t]=0;
-                                   }
-                                   cout<<"\n";
-                                   }
-  
-    int k=1;
-    int i=1;
-    int j=n/2;
-    a[i][j]=k;
-    k++;
-    i--;
-    j++;
-                   
-    while(k!=n*n+1)
-    {
-                   
-                  if(i==0&&j==n)
-                 {
-                                 a[i+2][j-1]=k;
-                 i=i+2;
-                 j=j-1;
-                 }
-                 
-                                 
-                  else if(i==0)
-                  {
-                       t=0;
-                       
-                       a[i+n][j]=k;
-                       i=i+n;
+// Function to generate an odd-order magic square
+vector<vector<int>> generateMagicSquare(int n) {
+    vector<vector<int>> magicSquare(n, vector<int>(n, 0));
 
-                       }
-                   else if (j==n)
-                   {
-                        t=0;
-                        a[i][j-n]=k;
-                        j=j-n;
-                        }
-                                 
-                   else  if(a[i][j]==NULL&&t==1)
-                   {
-                                  
-                                   a[i][j]=k;
-                                   }
-                                  else  if(a[i][j]!=NULL&&t==1)  
-                                  {
-                                        a[i+2][j-1]=k;
-                                        i=i+2;
-                                        j=j-1;
-                                   }
-                                       
-                                     
-                                 i--;
-                                 j++;
-                                 k++;
-                                 t=1;
-                   }//end of while
-                   
-                   for(int s=1;s<=n;s++)
-                   {
-                           for(int t=0;t<n;t++)
-                           {
-                                   cout<<a[s][t]<<"\t";
-                                   }
-                                   cout<<"\n"<<"\n";
-                                   }
-                                   
-                           getch();
-    
-    system("PAUSE");
-    return EXIT_SUCCESS;
+    int num = 1;
+    int row = 0;
+    int col = n / 2;
+
+    while (num <= n * n) {
+        magicSquare[row][col] = num++;
+
+        int nextRow = (row - 1 + n) % n;
+        int nextCol = (col + 1) % n;
+
+        if (magicSquare[nextRow][nextCol] != 0) {
+            row = (row + 1) % n;
+        } else {
+            row = nextRow;
+            col = nextCol;
+        }
+    }
+
+    return magicSquare;
+}
+
+int main() {
+    int n;
+    cout << "Enter an odd number for the size of the magic square: ";
+    cin >> n;
+
+    if (n % 2 == 0 || n <= 0) {
+        cout << "Only positive odd numbers are allowed.\n";
+        return 1;
+    }
+
+    vector<vector<int>> magicSquare = generateMagicSquare(n);
+
+    cout << "\nMagic Square of size " << n << ":\n\n";
+    for (const auto& row : magicSquare) {
+        for (int val : row) {
+            cout << setw(4) << val;
+        }
+        cout << "\n";
+    }
+
+    return 0;
 }
