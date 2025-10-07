@@ -1,58 +1,47 @@
-#include <cstdlib>
 #include <iostream>
-#include <windows.h>
 #include <conio.h>
-int f,k;
-int a[8][8];
+#include <cstdlib>
 using namespace std;
-void makan(void)
-{
-     if(f-2>=0&&f-2<8&&k+1>=0&&k+1<8)
-     cout<<"satr va sotun="<<f-2<<","<<k+1<<"\n";
-     
-     if(f-2>=0&&f-2<8&&k-1>=0&&k-1<8)
-     cout<<"satr va sotun="<<f-2<<","<<k-1<<"\n";
-     
-     if(f+2>=0&&f+2<8&&k+1>=0&&k+1<8)
-     cout<<"satr va sotun="<<f+2<<","<<k+1<<"\n";
-     
-     if(f+2>=0&&f+2<8&&k-1>=0&&k-1<8)
-     cout<<"satr va sotun="<<f+2<<","<<k-1<<"\n";
-     
-     if(k-2>=0&&k-2<8&&f+1>=0&&f+1<8)
-     cout<<"satr va sotun="<<f+1<<","<<k-2<<"\n";
-     
-     if(k-2>=0&&k-2<8&&f-1>=0&&f-1<8)
-     cout<<"satr va sotun="<<f-1<<","<<k-2<<"\n";
-     
-     if(k+2>=0&&k+2<8&&f+1>=0&&f+1<8)
-     cout<<"satr va sotun="<<f+1<<","<<k+2<<"\n";
-     
-     if(k+2>=0&&k+2<8&&f-1>=0&&f-1<8)
-     cout<<"satr va sotun="<<f-1<<","<<k+2<<"\n";
-     }
-      
-     
-int main(int argc, char *argv[])
-{
-    while(1)
-    {
-            system("cls");
-            cout<<"satr va sotun ra vared konid:"<<"\n";
-            cin>>f>>k;
-            if(f>7||k>7)
-            {
-                        cout<<"adad namotabar!"<<"\n";
-                        getch();
-                        continue;
-                        }
-            makan( );
-            cout<<"aya edame midahid?";
-            char ch;
-            cin>>ch;
-            if(ch=='n')
-            break;
-            }
+
+const int BOARD_SIZE = 8;
+int row, col;
+
+void showKnightMoves() {
+    int moves[8][2] = {
+        {-2, +1}, {-2, -1}, {+2, +1}, {+2, -1},
+        {-1, -2}, {+1, -2}, {-1, +2}, {+1, +2}
+    };
+
+    cout << "Valid knight moves from (" << row << ", " << col << "):\n";
+    for (int i = 0; i < 8; i++) {
+        int newRow = row + moves[i][0];
+        int newCol = col + moves[i][1];
+        if (newRow >= 0 && newRow < BOARD_SIZE && newCol >= 0 && newCol < BOARD_SIZE) {
+            cout << "→ (" << newRow << ", " << newCol << ")\n";
+        }
+    }
+}
+
+int main() {
+    char continueGame = 'y';
+
+    while (continueGame == 'y') {
+        system("cls");
+        cout << "Enter knight's position (row and column from 0 to 7): ";
+        cin >> row >> col;
+
+        if (row < 0 || row >= BOARD_SIZE || col < 0 || col >= BOARD_SIZE) {
+            cout << "Invalid position! Press any key to try again...\n";
+            getch();
+            continue;
+        }
+
+        showKnightMoves();
+
+        cout << "\nDo you want to continue? (y/n): ";
+        cin >> continueGame;
+    }
+
     system("PAUSE");
     return EXIT_SUCCESS;
 }
