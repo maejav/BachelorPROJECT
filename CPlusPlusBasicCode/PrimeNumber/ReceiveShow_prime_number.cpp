@@ -1,35 +1,34 @@
-#include <cstdlib>
 #include <iostream>
 using namespace std;
-int prime(int p)
-{ int r;
-int temp=1;
 
-    for(int i=2; i<p/2; i++)
-    {
-          r=p%i;
-         if (r==0)
-         {temp=0;
-         break;
-         }
-         }
-         return temp;
-         }
-
-int main(int argc, char *argv[])
-{int a,b,i;
-    cout<<"adad ha?";
-    cin>>a>>b;
-    for(i=a;i<=b;i++)
-    {
-            int f=prime (i);
-            if(f==1)
-            {
-                    cout<<i<<"\n";
-                    }
-                    }
-            
-    system("PAUSE");
-    return EXIT_SUCCESS;
+// Function to check if a number is prime
+bool isPrime(int p) {
+    if (p < 2) return false;
+    for (int i = 2; i * i <= p; ++i) {
+        if (p % i == 0)
+            return false;
+    }
+    return true;
 }
 
+int main() {
+    int a, b;
+    cout << "Enter range to find prime numbers:\n";
+    cout << "Start (a): ";
+    cin >> a;
+    cout << "End (b): ";
+    cin >> b;
+
+    if (a > b) {
+        cout << "Invalid range. 'a' should be less than or equal to 'b'.\n";
+        return 1;
+    }
+
+    cout << "\nPrime numbers between " << a << " and " << b << ":\n";
+    for (int i = a; i <= b; ++i) {
+        if (isPrime(i))
+            cout << i << "\n";
+    }
+
+    return 0;
+}
