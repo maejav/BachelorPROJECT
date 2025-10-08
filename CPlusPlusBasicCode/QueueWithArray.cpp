@@ -1,132 +1,121 @@
 #include <iostream>
-#include <conio.h>
-#include <cstdlib>
-#include <windows.h>
 using namespace std;
-#define size 100
-	int num_m=0;
-	int num_f=0;
-class queue{
+
+#define SIZE 100
+int num_m = 0;
+int num_f = 0;
+
+class Queue {
 private:
-	int front;
-	int rear;
-	int a[size];
+    int front;
+    int rear;
+    int a[SIZE];
+
 public:
-	queue(){
-		front=0;
-		rear=-1;///// 
-	}
-	int empty(){
-		if(rear<front){
-			return 1;///////if queue is empty
-		}
-		return 0;///////if queue is not empty
-	}
-	void  insert(int &x,int &overflow){
-		if(rear==size-1)
-			overflow=1;
-		else{
-			overflow=0;
-			a[++rear]=x;
-		}
-	}  ////////end of insert
-	void show(int &x,int &underflow){
-		if(empty())
-			underflow=1;
-		else{
-			underflow=0;
-			x=a[front];
-		}
-	}///////end of show////
-	void del(int &x,int &underflow){
-		if(empty())
-			underflow=1;
-		else{
-			underflow=0;
-			front++;
-		}
-	}
-	void print(){
-		for(int i=front;i<rear;i++)
-			cout<<a[i]<<"	";
-		getch();
-	}
+    Queue() {
+        front = 0;
+        rear = -1;
+    }
+
+    bool empty() {
+        return rear < front;
+    }
+
+    void insert(int x, int& overflow) {
+        if (rear == SIZE - 1)
+            overflow = 1;
+        else {
+            overflow = 0;
+            a[++rear] = x;
+        }
+    }
+
+    void del(int& x, int& underflow) {
+        if (empty())
+            underflow = 1;
+        else {
+            underflow = 0;
+            x = a[front++];
+        }
+    }
+
+    void print() {
+        for (int i = front; i <= rear; ++i)
+            cout << a[i] << "\t";
+        cout << "\n";
+    }
 };
-int main(){
-	queue female,male;
-	char turn='m';
-	char pa,si;
-	int exit=1;
-//////////////////////////////////////////????????????
-	int x,overflow,underflow;
-	while(exit){
-		cout<<"If you want to insert in queue press :'e'\n";
-		cout<<"If you want to turn press :'n'\n";
-		cout<<"If you want to show number of person in queue press :'s'\n";
-		cout<<"If you want to exit press :'x'\n";
-		cin>>pa;
-//	system("cls");
-	switch(pa){
-		case 'e':
-		    cout<<"female or male?\nfemale:f , male:m\n";
-		    cin>>si;
-			if(si=='m'){
-					male.insert(x,overflow);
-					num_m++;
-			        }
-			else if(si=='f'){
-					female.insert(x,underflow);
-					num_f++;
-				    }
-			break;
-			 case 's':
-				 cout<<"number of male:"<<num_m<<"\n";
-				 cout<<"number of female:"<<num_f<<"\n";
-				 getch();
-				 break;
-		
-		     case 'n':
-				 if(turn=='m'){
 
-					 if(male.empty()==0){
-						 male.del(x,underflow);
-						 num_m--;
-						 turn='f';
-					 }
-					 else if(female.empty()==0){
-						 female.del(x,underflow);
-						 num_f--;
-						 turn='m';
-					 }
-					 else
-						 cout<<"both of queues are empty!\n";
-				 }
-				 else if(turn=='f'){
-					 
-					 if(female.empty()==0){
-						 female.del(x,underflow);
-						 num_f--;
-						 turn='m';
-					 }
-					 
-					 else if(male.empty()==0){
-						 male.del(x,underflow);
-						 num_m--;
-						 turn='f';
-					 }
+int main() {
+    Queue female, male;
+    char turn = 'm';
+    char action, gender;
+    bool running = true;
+    int x = 1, overflow, underflow;
 
-					 else
-				    cout<<"both of queues are empty!\n";
-				 }
-				 break;	
-             case 'x':
-				 cout<<"End of program!\n";
-				 getch();
-				exit=0;
-				break;
-			}/////end of switch
-	system("cls");
-	}
+    while (running) {
+        cout << "\nMenu:\n";
+        cout << "Insert into queue: 'e'\n";
+        cout << "Serve next person: 'n'\n";
+        cout << "Show queue counts: 's'\n";
+        cout << "Exit: 'x'\n";
+        cin >> action;
 
-	return 0;
+        switch (action) {
+        case 'e':
+            cout << "Gender? (f = female, m = male): ";
+            cin >> gender;
+            if (gender == 'm') {
+                male.insert(x++, overflow);
+                num_m++;
+            } else if (gender == 'f') {
+                female.insert(x++, overflow);
+                num_f++;
+            }
+            break;
+
+        case 's':
+            cout << "Number of males: " << num_m << "\n";
+            cout << "Number of females: " << num_f << "\n";
+            break;
+
+        case 'n':
+            if (turn == 'm') {
+                if (!male.empty()) {
+                    male.del(x, underflow);
+                    num_m--;
+                    turn = 'f';
+                } else if (!female.empty()) {
+                    female.del(x, underflow);
+                    num_f--;
+                    turn = 'm';
+                } else {
+                    cout << "Both queues are empty!\n";
+                }
+            } else {
+                if (!female.empty()) {
+                    female.del(x, underflow);
+                    num_f--;
+                    turn = 'm';
+                } else if (!male.empty()) {
+                    male.del(x, underflow);
+                    num_m--;
+                    turn = 'f';
+                } else {
+                    cout << "Both queues are empty!\n";
+                }
+            }
+            break;
+
+        case 'x':
+            cout << "End of program!\n";
+            running = false;
+            break;
+
+        default:
+            cout << "Invalid option.\n";
+        }
+    }
+
+    return 0;
 }
