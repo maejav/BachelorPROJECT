@@ -1,28 +1,30 @@
 #include <iostream>
-#include <cstring>
 using namespace std;
 
 struct Student {
     char name[20];
-    float moadel;
+    float GPA;
 };
 
-Student topStudent = {"", -1};
-Student tiedStudents[10]; // supports up to 10 ties
-int tieCount = 0;
+Student current;
+Student topStudent = {'\0', -1};
+Student tiedStudents[2];
+int hasTie = 0;
+int tieIndex = 0;
 
 void insert(Student& max) {
-    Student temp;
-    cout << "Enter student name: ";
-    cin >> temp.name;
-    cout << "Enter GPA: ";
-    cin >> temp.moadel;
+    cout << "Enter student name:\n";
+    cin >> current.name;
+    cout << "Enter GPA:\n";
+    cin >> current.GPA;
 
-    if (temp.moadel > max.moadel) {
-        max = temp;
-        tieCount = 0; // reset tie list
-    } else if (temp.moadel == max.moadel) {
-        tiedStudents[tieCount++] = temp;
+    if (current.GPA > max.GPA) {
+        max = current;
+        hasTie = 0;
+        tieIndex = 0;
+    } else if (current.GPA == max.GPA) {
+        hasTie = 1;
+        tiedStudents[tieIndex++] = current;
     }
 }
 
@@ -31,13 +33,12 @@ int main() {
         insert(topStudent);
     }
 
-    cout << "\nTop student:\n";
-    cout << topStudent.name << " - GPA: " << topStudent.moadel << "\n";
+    cout << "\nTop student:\n" << topStudent.name << "\nGPA: " << topStudent.GPA << "\n";
 
-    if (tieCount > 0) {
-        cout << "\nOther students with same GPA:\n";
-        for (int i = 0; i < tieCount; ++i) {
-            cout << tiedStudents[i].name << " - GPA: " << tiedStudents[i].moadel << "\n";
+    if (hasTie) {
+        cout << "\nOther students with the same GPA:\n";
+        for (int i = 0; i < tieIndex; ++i) {
+            cout << tiedStudents[i].name << "\nGPA: " << tiedStudents[i].GPA << "\n";
         }
     }
 
