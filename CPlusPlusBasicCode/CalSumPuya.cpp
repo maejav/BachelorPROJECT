@@ -1,39 +1,34 @@
-#include <cstdlib>
 #include <iostream>
-#include <conio.h>
 using namespace std;
 
-int main(int argc, char *argv[])
-{
-    int s;
-    int n;
-while(1)
-{s=0;
+int main() {
+    while (true) {
+        int n, sum = 0;
+        cout << "How many numbers do you want to enter? ";
+        cin >> n;
 
-cout<<"adad?";
-cin>>n;
-int *p= new int[n];
-
-for(int i=0;i<n;i++)
-{
-        cout<<"adad?";
-        cin>>*(p+i);
+        if (n <= 0) {
+            cout << "Invalid size. Try again.\n";
+            continue;
         }
-        for(int i=0;i<n;i++)
-        {
-                s+=*(p+i);
-                }
-                cout<<"s:"<<s<<"\n";
-                cout<<"edame?";
-                char ch;
-                cin>>ch;
-                if(ch==n)
-                {
-                         break;
-                         }
-                         delete []p;
-                         }
-  
-    system("PAUSE");
-    return EXIT_SUCCESS;
+
+        int* p = new int[n];
+
+        for (int i = 0; i < n; ++i) {
+            cout << "Enter number " << i + 1 << ": ";
+            cin >> p[i];
+            sum += p[i];
+        }
+
+        cout << "Sum: " << sum << "\n";
+
+        delete[] p;
+
+        char ch;
+        cout << "Do you want to continue? (y/n): ";
+        cin >> ch;
+        if (ch == 'n' || ch == 'N') break;
+    }
+
+    return 0;
 }
